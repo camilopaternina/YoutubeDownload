@@ -4,6 +4,7 @@ package com.mycompany.youtubedownload;
 import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -63,7 +64,7 @@ public class Ventana extends javax.swing.JFrame {
         setTitle("YoutubeDownload");
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(255, 204, 204));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel1.setText("Ingrese el link del video que quiere descargar: ");
 
@@ -86,6 +87,11 @@ public class Ventana extends javax.swing.JFrame {
         });
 
         jButton2.setText("Descargar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jTextField2.setEditable(false);
         jTextField2.addActionListener(new java.awt.event.ActionListener() {
@@ -217,7 +223,7 @@ public class Ventana extends javax.swing.JFrame {
         try {
             /*nombre = client.getString();
             tam = client.getString();*/
-            File file = client.getImage("https://i1.ytimg.com/vi/"+ ID + "/0.jpg", new File("YTD.jpg"));
+            File file = client.getImage("https://i1.ytimg.com/vi/"+ ID + "/hqdefault.jpg", new File("YTD.jpg"));
             ImageIcon image = new ImageIcon(file.getPath());
             Icon icon = new ImageIcon(image.getImage().getScaledInstance(jLabel2.getWidth(), jLabel2.getHeight(), Image.SCALE_DEFAULT));
             jLabel2.setIcon(icon);
@@ -235,6 +241,10 @@ public class Ventana extends javax.swing.JFrame {
     private void jTextField1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusGained
         jTextField1.setText("");
     }//GEN-LAST:event_jTextField1FocusGained
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -289,4 +299,14 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
+
+    public void DownloadVideo(String URL) throws IOException{
+        String[] cmd = {"youtube-dl", URL};
+        Runtime.getRuntime().exec(cmd);
+    }
+    
+    public void DownloadMusic(String URL) throws IOException{
+        String[] cmd = {"youtube-dl", "-x" ,URL};
+        Runtime.getRuntime().exec(cmd);
+    }
 }
