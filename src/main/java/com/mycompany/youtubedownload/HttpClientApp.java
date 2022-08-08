@@ -35,14 +35,14 @@ public class HttpClientApp {
         return imagen;
     }
     
-    public String getString(String url) throws URISyntaxException{
+    public String getString(String url) throws URISyntaxException, InterruptedException, ExecutionException{
         requestGET = HttpRequest.newBuilder()
                 .uri(new URI(url))
                 .GET()
                 .timeout(Duration.ofSeconds(10))
                 .build();
         
-        HttpResponse response = (HttpResponse) client.sendAsync(requestGET, BodyHandlers.ofString());
-        return response.toString();
+        HttpResponse response = (HttpResponse) client.sendAsync(requestGET, BodyHandlers.ofString()).get();
+        return response.body().toString();
     }
 }
