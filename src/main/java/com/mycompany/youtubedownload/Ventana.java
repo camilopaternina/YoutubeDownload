@@ -1,4 +1,3 @@
-
 package com.mycompany.youtubedownload;
 
 import java.awt.Color;
@@ -18,10 +17,10 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 public class Ventana extends javax.swing.JFrame {
-    
-    String ID; 
+
+    String ID;
     String nombre;
-    
+
     public Ventana() {
         initComponents();
         jTextField1.setBorder(new bordesRedondeados(3));
@@ -236,18 +235,18 @@ public class Ventana extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         HttpClientApp client = new HttpClientApp();
         jPanel3.setBackground(Color.white);
-        if(jTextField1.getText().split("=").length <= 2)
+        if (jTextField1.getText().split("=").length <= 2) {
             ID = jTextField1.getText().split("=")[1];
-        else{
+        } else {
             ID = jTextField1.getText().split("=")[1].split("&")[0];
         }
         try {
-            String aux = client.getString("https://www.youtube.com/watch?v="+ID);
+            String aux = client.getString("https://www.youtube.com/watch?v=" + ID);
             String[] vaux = aux.split("<title>");
             vaux = vaux[1].split("</title>");
             nombre = vaux[0];
             jTextField2.setText(nombre);
-            File file = client.getImage("https://i1.ytimg.com/vi/"+ ID + "/hqdefault.jpg", new File("YTD.jpg"));
+            File file = client.getImage("https://i1.ytimg.com/vi/" + ID + "/hqdefault.jpg", new File("YTD.jpg"));
             ImageIcon image = new ImageIcon(file.getPath());
             Icon icon = new ImageIcon(image.getImage().getScaledInstance(jLabel2.getWidth(), jLabel2.getHeight(), Image.SCALE_DEFAULT));
             jLabel2.setIcon(icon);
@@ -267,16 +266,18 @@ public class Ventana extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1FocusGained
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if(jCheckBox1.isSelected()){
+        if (jCheckBox1.isSelected()) {
             try {
-                DownloadMusic("https://www.youtube.com/watch?v="+ID);
+                DownloadMusic("https://www.youtube.com/watch?v=" + ID);
             } catch (IOException ex) {
                 Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }else{
+        } else {
             try {
                 try {
-                    DownloadVideo("https://www.youtube.com/watch?v="+ID);
+                    DownloadVideo("https://www.youtube.com/watch?v=" + ID);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -344,33 +345,35 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 
-    public void DownloadVideo(String URL) throws IOException, InterruptedException{
-        String file = "C:\\Users\\"+System.getProperty("user.name")+"\\Downloads\\YoutubeDownload\\Videos\\"  + jTextField2.getText();
-        file = "\"" + file + ".webm";
+    public void DownloadVideo(String URL) throws IOException, InterruptedException {
+        String file = "C:\\Users\\" + System.getProperty("user.name") + "\\Downloads\\YoutubeDownload\\Videos\\" + jTextField2.getText();
+        file = "\"" + file + ".webm\"";
         String[] cmd = {"cmd"};
-        Process proceso  = Runtime.getRuntime().exec(cmd);
-        
+        Process proceso = Runtime.getRuntime().exec(cmd);
+
         new Thread(new Hilo(proceso.getErrorStream(), System.err)).start();
         new Thread(new Hilo(proceso.getInputStream(), System.out)).start();
         PrintWriter pw = new PrintWriter(proceso.getOutputStream());
-        
+
         pw.println("cd " + System.getProperty("user.dir"));
-        pw.println("youtube-dl -o " + file + " "+ URL);
+        pw.println("youtube-dl -o " + file + " " + URL);
         pw.close();
         proceso.waitFor();
     }
-    
-    public void DownloadMusic(String URL) throws IOException{
-        String file = "C:\\Users\\"+System.getProperty("user.name")+"\\Downloads\\YoutubeDownload\\Music\\" + jTextField2.getText();
+
+    public void DownloadMusic(String URL) throws IOException, InterruptedException {
+        String file = "C:\\Users\\" + System.getProperty("user.name") + "\\Downloads\\YoutubeDownload\\Music\\" + jTextField2.getText();
         file = "\"" + file + ".mp3\"";
         String[] cmd = {"cmd"};
-        Process proceso  = Runtime.getRuntime().exec(cmd);
-        
+        Process proceso = Runtime.getRuntime().exec(cmd);
+
         new Thread(new Hilo(proceso.getErrorStream(), System.err)).start();
         new Thread(new Hilo(proceso.getInputStream(), System.out)).start();
         PrintWriter pw = new PrintWriter(proceso.getOutputStream());
-        
+
         pw.println("cd " + System.getProperty("user.dir"));
-        pw.println("youtube-dl --extract-audio --audio-format mp3 -o " + file + " "+ URL);
+        pw.println("youtube-dl --extract-audio --audio-format mp3 -o " + file + " " + URL);
+        pw.close();
+        proceso.waitFor();
     }
 }
