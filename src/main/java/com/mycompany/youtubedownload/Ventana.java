@@ -26,6 +26,7 @@ public class Ventana extends javax.swing.JFrame {
         jTextField1.setBorder(new bordesRedondeados(3));
         jTextField2.setBorder(new bordesRedondeados(3));
         ID = "";
+        setIconImage(new ImageIcon("logo.png").getImage());
     }
 
     /**
