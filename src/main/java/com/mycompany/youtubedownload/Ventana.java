@@ -3,12 +3,17 @@ package com.mycompany.youtubedownload;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
@@ -270,7 +275,11 @@ public class Ventana extends javax.swing.JFrame {
             }
         }else{
             try {
-                DownloadVideo("https://www.youtube.com/watch?v="+ID);
+                try {
+                    DownloadVideo("https://www.youtube.com/watch?v="+ID);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } catch (IOException ex) {
                 Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -335,17 +344,33 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     // End of variables declaration//GEN-END:variables
 
-    public void DownloadVideo(String URL) throws IOException{
+    public void DownloadVideo(String URL) throws IOException, InterruptedException{
         String file = "C:\\Users\\"+System.getProperty("user.name")+"\\Downloads\\YoutubeDownload\\Videos\\"  + jTextField2.getText();
-        file = "\"" + file + "\"";
-        String[] cmd1 = {"youtube-dl", "-o", file ,URL};
-        Runtime.getRuntime().exec(cmd1);
+        file = "\"" + file + ".webm";
+        String[] cmd = {"cmd"};
+        Process proceso  = Runtime.getRuntime().exec(cmd);
+        
+        new Thread(new Hilo(proceso.getErrorStream(), System.err)).start();
+        new Thread(new Hilo(proceso.getInputStream(), System.out)).start();
+        PrintWriter pw = new PrintWriter(proceso.getOutputStream());
+        
+        pw.println("cd " + System.getProperty("user.dir"));
+        pw.println("youtube-dl -o " + file + " "+ URL);
+        pw.close();
+        proceso.waitFor();
     }
     
     public void DownloadMusic(String URL) throws IOException{
         String file = "C:\\Users\\"+System.getProperty("user.name")+"\\Downloads\\YoutubeDownload\\Music\\" + jTextField2.getText();
-        file = "\"" + file + ".(ext)s\"";
-        String[] cmd1 = {"youtube-dl","--extract-audio","--audio-format", "mp3","-o", file ,URL};
-        Runtime.getRuntime().exec(cmd1);
+        file = "\"" + file + ".mp3\"";
+        String[] cmd = {"cmd"};
+        Process proceso  = Runtime.getRuntime().exec(cmd);
+        
+        new Thread(new Hilo(proceso.getErrorStream(), System.err)).start();
+        new Thread(new Hilo(proceso.getInputStream(), System.out)).start();
+        PrintWriter pw = new PrintWriter(proceso.getOutputStream());
+        
+        pw.println("cd " + System.getProperty("user.dir"));
+        pw.println("youtube-dl --extract-audio --audio-format mp3 -o " + file + " "+ URL);
     }
 }
